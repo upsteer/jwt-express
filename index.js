@@ -4,8 +4,7 @@ const port = 2024;
 const jwt = require('jsonwebtoken');
 const bodyParser = require('body-parser');
 
-app.use(bodyParser.urlencoded({ extended: true }));
-// app.use(bodyParser.json());
+app.use(bodyParser.json());
 
 app.use('/login', express.static('static'));
 
@@ -13,11 +12,11 @@ app.get('/', function(req, res){
     res.send('Hello World!');
 });
 
-app.post('/login-creds', function(req, res){
-    console.log(req.body['uname'], req.body['psw']);
-    const {uname, psw} = req.body;
-    if(uname == 'abc' && psw == '123'){
-        const accessToken = jwt.sign({ username: uname}, 'secret123');
+app.post('/authenticate', function(req, res){
+    console.log(req.body['username'], req.body['password']);
+    const {username, password} = req.body;
+    if(username == 'abc' && password == '123'){
+        const accessToken = jwt.sign({ username: username}, 'secret123');
         res.json(accessToken);
     } else {
         res.send('Invalid Creds!');
@@ -29,12 +28,11 @@ const authenticateJWT = (req, res, next) => {
 
     if (authHeader) {
         const token = authHeader.split(' ')[1];
-
-        jwt.verify(token, accessTokenSecret, (err, user) => {
+        console.log(token)
+        jwt.verify(token, 'secret123', (err, user) => {
             if (err) {
                 return res.sendStatus(403);
             }
-
             req.user = user;
             next();
         });
@@ -43,9 +41,9 @@ const authenticateJWT = (req, res, next) => {
     }
 };
 
-app.get('/protected-resource', authenticateJWT, function(res, req){
+app.get('/protected-resource', authenticateJWT, function(req, res){
     //check for the bearer token
-    res.send("You are viewing a protected UTL")
+    res.send("You are viewing a protected URL");
 })
 
 app.listen(port, ()=>{console.log(`App running at: http://127.0.0.1:${port}`)})

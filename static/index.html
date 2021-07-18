@@ -1,160 +1,131 @@
 <!DOCTYPE html>
 <html>
 <head>
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<style>
-body {font-family: Arial, Helvetica, sans-serif;}
-
-/* Full-width input fields */
-input[type=text], input[type=password] {
-  width: 100%;
-  padding: 12px 20px;
-  margin: 8px 0;
-  display: inline-block;
-  border: 1px solid #ccc;
-  box-sizing: border-box;
-}
-
-/* Set a style for all buttons */
-button {
-  background-color: #04AA6D;
-  color: white;
-  padding: 14px 20px;
-  margin: 8px 0;
-  border: none;
-  cursor: pointer;
-  width: 100%;
-}
-
-button:hover {
-  opacity: 0.8;
-}
-
-/* Extra styles for the cancel button */
-.cancelbtn {
-  width: auto;
-  padding: 10px 18px;
-  background-color: #f44336;
-}
-
-/* Center the image and position the close button */
-.imgcontainer {
-  text-align: center;
-  margin: 24px 0 12px 0;
-  position: relative;
-}
-
-img.avatar {
-  width: 40%;
-  border-radius: 50%;
-}
-
-.container {
-  padding: 16px;
-}
-
-span.psw {
-  float: right;
-  padding-top: 16px;
-}
-
-/* The Modal (background) */
-.modal {
-  position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
-  left: 0;
-  top: 0;
-  width: 100%; /* Full width */
-  height: 100%; /* Full height */
-  overflow: auto; /* Enable scroll if needed */
-  background-color: rgb(0,0,0); /* Fallback color */
-  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
-  padding-top: 60px;
-}
-
-/* Modal Content/Box */
-.modal-content {
-  background-color: #fefefe;
-  margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
-  border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
-}
-
-/* The Close Button (x) */
-.close {
-  position: absolute;
-  right: 25px;
-  top: 0;
-  color: #000;
-  font-size: 35px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: red;
-  cursor: pointer;
-}
-
-/* Add Zoom Animation */
-.animate {
-  -webkit-animation: animatezoom 0.6s;
-  animation: animatezoom 0.6s
-}
-
-@-webkit-keyframes animatezoom {
-  from {-webkit-transform: scale(0)} 
-  to {-webkit-transform: scale(1)}
-}
-  
-@keyframes animatezoom {
-  from {transform: scale(0)} 
-  to {transform: scale(1)}
-}
-
-/* Change styles for span and cancel button on extra small screens */
-@media screen and (max-width: 300px) {
-  span.psw {
-     display: block;
-     float: none;
-  }
-  .cancelbtn {
-     width: 100%;
-  }
-}
-</style>
+<script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
+<style>
+  #app {
+    display: flex;
+    justify-content: center;
+    font-family: "Work Sans", sans-serif;
+  }
+
+  form {
+    width: 500px;
+    padding: 10px 40px;
+  }
+  form label {
+    text-transform: uppercase;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    font-weight: bold;
+  }
+  form input, form textarea {
+    border: 1px solid #ccc;
+    color: #333;
+    width: calc(100% - 30px);
+  }
+  form input, form textarea, form button {
+    border-radius: 4px;
+    padding: 8px 15px;
+    font-family: "Work Sans", sans-serif;
+    font-weight: 300;
+  }
+  form div {
+    margin: 20px 0;
+  }
+
+  button {
+    color: white;
+    border: none;
+    width: calc(100% - 30px);
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    background: #ccc;
+    cursor: pointer;
+    box-shadow: 0px 2px 3px rgba(0, 0, 0, 0.3);
+    transition: 0.25s all ease;
+  }
+  button:hover {
+    transform: translateY(2px);
+  }
+
+  .active {
+    background: #5968d7;
+  }
+
+  pre-content {
+    width: 500px;
+  }
+  .button-border{
+    border: 2px solid black;
+    color: green;
+    align-self: flex-end;
+    background-color: aqua;
+  }
+</style>
 <body>
-
-<div id="id01" class="modal">
-  
-  <form class="modal-content" onsubmit="return mySubmitFunction(event)" method="post">
-
-    <div class="container">
-      <label for="uname"><b>Username</b></label>
-      <input type="text" placeholder="Enter Username" name="uname" required>
-
-      <label for="psw"><b>Password</b></label>
-      <input type="password" placeholder="Enter Password" name="psw" required>
-        
-      <button type="submit">Login</button>
-      <label>
-        <input type="checkbox" checked="checked" name="remember"> Remember me
-      </label>
+<div id="app">
+  <div v-on:click="test_authetication" class="button-border">Test</div>
+  <form @submit.prevent="submitForm">
+    <div>
+      <label for="username">Username:</label><br>
+      <input id="username" type="text" v-model="username" required/>
     </div>
-
-    <div class="container" style="background-color:#f1f1f1">
-      <button type="button" onclick="document.getElementById('id01').style.display='none'" class="cancelbtn">Cancel</button>
-      <span class="psw">Forgot <a href="#">password?</a></span>
+    <div>
+      <label for="password">Password:</label><br>
+      <input id="password" type="password" v-model="password" required/>
+    </div>
+    <button :class="[username ? activeClass : '']" type="submit">Submit</button>
+    <div>
+      <h3>Data retrieved from server:</h3>
+      <p v-if="success"> {{ success }}</p>
+      <pre>{{ response }}</pre>
     </div>
   </form>
 </div>
 
 <script>
-function mySubmitFunction(e){
-  e.preventDefault();
-  console.log('here')
-}
+new Vue({
+  el: '#app',
+  data() {
+    return {
+      username: '',
+      password: '',
+      response: '',
+      success: '',
+      activeClass: 'active'
+    }
+  },
+  methods: {
+    submitForm() {
+      axios.post('/authenticate', {
+        username: this.username,
+        password: this.password,
+      }).then(response => {
+        axios.defaults.headers.common['Authorization'] = 'Bearer ' + response["data"];
+        this.success = 'Data saved successfully';
+        this.response = JSON.stringify(response, null, 2);
+      }).catch(error => {
+        this.response = 'Error: ' + error
+      })
+      this.username = '';
+      this.password = '';
+    },
+    test_authetication(){
+      axios.get('/protected-resource', {})
+      .then(response => {
+        this.success = 'Fetched successfully';
+        console.log(response)
+        this.response = JSON.stringify(response["data"], null, 2);
+      }).catch(error => {
+          this.response = 'Error: ' + error
+        });
+      }
+    }
+})
 </script>
 
 </body>
